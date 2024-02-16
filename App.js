@@ -15,7 +15,7 @@ const Tarefas = ({ item }) => {
 
 const App = () => {
 
-  const [tarefas, setTarefas] = React.useState([]);
+  const [tarefas, setTarefas] = React.useState(['tafera']);
   const [tarefa, setTarefa] = React.useState('');
 
   function adicionarTarefa() {
