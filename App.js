@@ -15,6 +15,13 @@ const Tarefas = ({ item }) => {
 
 const App = () => {
 
+  const arrTarefas = [
+    {'tarefa':'Tarefa1', 'isDone': false},
+    {'tarefa':'varrer sala', 'isDone': false},
+    {'tarefa':'limpar pia', 'isDone': false},
+   
+  ]
+
   const [tarefas, setTarefas] = React.useState(['tafera']);
   const [tarefa, setTarefa] = React.useState('');
 
@@ -28,6 +35,14 @@ const App = () => {
     setTarefa('');
   }
 
+  function deletarTarefa(indice){
+    const copyArr = [...arrTarefas]
+    const copy = tarefas.filter((item, index) => {
+      if (index !== indice){
+        setTarefas(copy)
+      }
+    })
+  }
 
   return (
     <View style={styles.container}>
