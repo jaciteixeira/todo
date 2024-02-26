@@ -2,28 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-
-
-const Tarefas = ({ item }) => {
-  return (
-    <View style={{ marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10 }}>
-      <Text>{item}</Text>
-    </View>
-  );
-}
-
+import { Tarefas } from './Tarefas';
 
 const App = () => {
 
-  const arrTarefas = [
-    {'tarefa':'Tarefa1', 'isDone': false},
-    {'tarefa':'varrer sala', 'isDone': false},
-    {'tarefa':'limpar pia', 'isDone': false},
-   
-  ]
-
-  const [tarefas, setTarefas] = React.useState(['tafera']);
-  const [tarefa, setTarefa] = React.useState('');
+  const [tarefas, setTarefas] = React.useState([]);
+  const [tarefa, setTarefa] = React.useState(null);
 
   function adicionarTarefa() {
 
@@ -31,17 +15,35 @@ const App = () => {
       return alert('Digite uma tarefa');
     }
 
-    setTarefas([...tarefas, tarefa]);
-    setTarefa('');
+    const novaTarefa = {
+      tarefa: tarefa,
+      isConcluido: false
+    }
+
+    setTarefas([...tarefas, novaTarefa]);
+    setTarefa(null);
   }
 
-  function deletarTarefa(indice){
-    const copyArr = [...arrTarefas]
-    const copy = tarefas.filter((item, index) => {
-      if (index !== indice){
-        setTarefas(copy)
-      }
-    })
+  function deletarTarefa(indice) {
+    // copia do array
+    const copiaTarefas = [...tarefas];
+
+    // atualizar item
+    const arrayAtualizado = copiaTarefas.filter((_, index) => index !== indice);
+
+    // atualizar estado
+    setTarefas(arrayAtualizado);
+  }
+
+  function marcarTarefa(indice) {
+    // copia do array
+    const copiaTarefas = [...tarefas];
+
+    // atualizar item
+    copiaTarefas[indice].isConcluido = !copiaTarefas[indice].isConcluido;
+
+    // atualizar estado
+    setTarefas(copiaTarefas);
   }
 
   return (
@@ -50,8 +52,8 @@ const App = () => {
 
       <FlatList
         data={tarefas}
-        renderItem={({ item }) => (
-          <Tarefas item={item} />
+        renderItem={({ item, index }) => (
+          <Tarefas item={item} indice={index} delTarefa={deletarTarefa} marcarTarefa={marcarTarefa} />
         )}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -86,14 +88,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 30
+    flexDirection: 'row', //eixo horizontal
+    justifyContent: 'center', // alinhamento horizontal
+    alignItems: 'center', // alinhamento vertical
+    padding: 30,
   },
   input: {
     height: 40,
-    borderRadius: 15,
+    borderRadius: 8,
     borderColor: 'gray',
     paddingHorizontal: 10,
     backgroundColor: 'white',
@@ -109,4 +111,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default App; 
+export default App;
