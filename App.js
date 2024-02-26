@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { PaperProvider, Modal, Portal, Text, Button, TextInput } from 'react-native-paper';
 
 import { Ionicons } from '@expo/vector-icons';
 import { Tarefas } from './Tarefas';
@@ -8,6 +9,14 @@ const App = () => {
 
   const [tarefas, setTarefas] = React.useState([]);
   const [tarefa, setTarefa] = React.useState(null);
+  const [isEditar, setIsEditar] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = { backgroundColor: 'white', padding: 20, flex: 0.5, margin: 32 };
+
+
 
   function adicionarTarefa() {
 
@@ -46,30 +55,60 @@ const App = () => {
     setTarefas(copiaTarefas);
   }
 
+  function editarTarefa(indice) {
+
+    showModal();
+
+    console.log('indice: ', indice)
+
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tarefas do dia</Text>
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text style={styles.title}>Tarefas do dia</Text>
 
-      <FlatList
-        data={tarefas}
-        renderItem={({ item, index }) => (
-          <Tarefas item={item} indice={index} delTarefa={deletarTarefa} marcarTarefa={marcarTarefa} />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite uma tarefa"
-          value={tarefa}
-          onChangeText={(texto) => setTarefa(texto)}
+        <FlatList
+          data={tarefas}
+          renderItem={({ item, index }) => (
+            <Tarefas item={item}
+              indice={index}
+              delTarefa={deletarTarefa}
+              marcarTarefa={marcarTarefa}
+              editarTarefa={editarTarefa} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
-        <TouchableOpacity onPress={() => adicionarTarefa()} style={styles.addBtn}>
-          <Ionicons name="add" size={30} color="#C0C0C0" />
-        </TouchableOpacity>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite uma tarefa"
+            value={tarefa}
+            onChangeText={(texto) => setTarefa(texto)}
+          />
+          <TouchableOpacity onPress={() => adicionarTarefa()} style={styles.addBtn}>
+            <Ionicons name="add" size={30} color="#C0C0C0" />
+          </TouchableOpacity>
+        </View>
+
+
+
+        <Portal>
+          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+            <TextInput
+              label="Tarefa"
+              value={tarefa}
+              onChangeText={text => setTarefa(text)}
+              style={{ marginBottom: 20 }}
+            />
+            <Button mode="contained" onPress={() => console.log('Pressed')}>
+              OK
+            </Button>
+          </Modal>
+        </Portal>
       </View>
-    </View>
+    </PaperProvider>
   );
 };
 

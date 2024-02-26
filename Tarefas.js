@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export const Tarefas = ({ item, indice, delTarefa, marcarTarefa }) => {
+export const Tarefas = ({ item, indice, delTarefa, marcarTarefa, editarTarefa }) => {
   return (
     <TouchableOpacity onPress={() => marcarTarefa(indice)}>
       <View style={styles.container}>
@@ -10,6 +10,10 @@ export const Tarefas = ({ item, indice, delTarefa, marcarTarefa }) => {
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={() => delTarefa(indice)}>
             <Ionicons name="trash" size={24} color="red" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => editarTarefa(indice)}>
+            <Ionicons name="create" size={24} color="lightgray" />
           </TouchableOpacity>
 
           {item.isConcluido && (
