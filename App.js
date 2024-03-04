@@ -1,96 +1,33 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { PaperProvider, Modal, Portal, Text, Button, TextInput } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
-import { Tarefas } from './Tarefas';
+import { StyleSheet } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from "@react-navigation/native";
+
+import EditarTarefa from './app/screens/Editar';
+import Tarefas from './app/screens/Tarefas';
+
+import { createStackNavigator } from "@react-navigation/stack";
+
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [tarefas, setTarefas] = React.useState([]);
-  const [tarefa, setTarefa] = React.useState({ tarefa: '', isConcluido: false });
-  const [visible, setVisible] = React.useState(false);
-  const [indiceAtual, setIndiceAtual] = React.useState(null);
-
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = { backgroundColor: 'white', padding: 20, flex: 0.5, margin: 32 };
-
-  const adicionarOuEditarTarefa = () => {
-    if (tarefa.tarefa.trim() === '') {
-      alert('Digite uma tarefa');
-      return;
-    }
-
-    const novasTarefas = [...tarefas];
-    if (indiceAtual !== null) {
-      novasTarefas[indiceAtual] = tarefa;
-    } else {
-      novasTarefas.push(tarefa);
-    }
-
-    setTarefas(novasTarefas);
-    setTarefa({ tarefa: '', isConcluido: false });
-    setIndiceAtual(null);
-    hideModal();
-  };
-
-  const deletarTarefa = (indice) => {
-    setTarefas(tarefas.filter((_, index) => index !== indice));
-  };
-
-  const marcarTarefa = (indice) => {
-    const novasTarefas = [...tarefas];
-    novasTarefas[indice].isConcluido = !novasTarefas[indice].isConcluido;
-    setTarefas(novasTarefas);
-  };
-
-  const editarTarefa = (indice) => {
-    setIndiceAtual(indice);
-    setTarefa(tarefas[indice]);
-    showModal();
-  };
-
   return (
     <PaperProvider>
-      <View style={styles.container}>
-        <Text style={styles.title}>Tarefas do dia</Text>
-        <FlatList
-          data={tarefas}
-          renderItem={({ item, index }) => (
-            <Tarefas
-              item={item}
-              indice={index}
-              delTarefa={deletarTarefa}
-              marcarTarefa={marcarTarefa}
-              editarTarefa={editarTarefa}
-            />
-          )}
-          keyExtractor={(_, index) => index.toString()}
-        />
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite uma tarefa"
-            value={tarefa.tarefa}
-            onChangeText={(texto) => setTarefa({ ...tarefa, tarefa: texto })}
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Tarefas">
+          <Stack.Screen
+            name="Tarefas"
+            component={Tarefas}
+            options={{ headerShown: true, title: 'Tarefas do dia', headerTitleAlign: 'center' }}
+            
           />
-          <TouchableOpacity onPress={adicionarOuEditarTarefa} style={styles.addBtn}>
-            <Ionicons name="add" size={30} color="#C0C0C0" />
-          </TouchableOpacity>
-        </View>
-        <Portal>
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-            <TextInput
-              label="Tarefa"
-              value={tarefa.tarefa}
-              onChangeText={(text) => setTarefa({ ...tarefa, tarefa: text })}
-              style={{ marginBottom: 20 }}
-            />
-            <Button mode="contained" onPress={adicionarOuEditarTarefa}>
-              OK
-            </Button>
-          </Modal>
-        </Portal>
-      </View>
+          <Stack.Screen
+            name="EditarTarefa"
+            component={EditarTarefa}
+            options={{ headerShown: true, title: 'Editar tarefa' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </PaperProvider>
   );
 };
